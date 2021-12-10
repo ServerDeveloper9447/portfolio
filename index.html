@@ -29,205 +29,133 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
   <style>
-  #snowflakeContainer {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    display: none;
-  }
+    body {
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #34A65F 0%, #0F8A5F 100%);
+    overflow: hidden;
+    color: white;
+    font-family: 'Inter';
+}
 
-  .snowflake {
-    position: fixed;
-    background-color: #ffffff;
-    user-select: none;
-    z-index: 1000;
-    pointer-events: none;
-    border-radius: 50%;
+.snowflake {
+    position: absolute;
     width: 10px;
     height: 10px;
-  }
+    background: linear-gradient(white, white); /* Workaround for Chromium's selective color inversion */
+    border-radius: 50%;
+    filter: drop-shadow(0 0 10px white);
+}
 </style>
-  <div id="snowflakeContainer">
-  <span class="snowflake"></span>
-</div>
+  <div id="snow"></div>
+  <script>
+    let snowflakes_count = 200;
 
-<script>
-  // Array to store our Snowflake objects
-  var snowflakes = [];
+// let base_css = ``; // Put your custom base css here
 
-  // Global variables to store our browser's window size
-  var browserWidth;
-  var browserHeight;
+if (typeof total !== 'undefined'){
+    snowflakes_count = total;
+}
 
-  // Specify the number of snowflakes you want visible
-  var numberOfSnowflakes = 80;
 
-  // Flag to reset the position of the snowflakes
-  var resetPosition = false;
-
-  // Handle accessibility
-  var enableAnimations = false;
-  var reduceMotionQuery = matchMedia("(prefers-reduced-motion)");
-
-  // Handle animation accessibility preferences 
-  function setAccessibilityState() {
-    if (reduceMotionQuery.matches) {
-      enableAnimations = false;
-    } else { 
-      enableAnimations = true;
+// This function allows you to turn on and off the snow
+function toggle_snow() {
+    let check_box = document.getElementById("toggle_snow");
+    if (check_box.checked == true) {
+        document.getElementById('snow').style.display = "block";
     }
-  }
-  setAccessibilityState();
-
-  reduceMotionQuery.addListener(setAccessibilityState);
-
-  //
-  // It all starts here...
-  //
-  function setup() {
-    if (enableAnimations) {
-      window.addEventListener("DOMContentLoaded", generateSnowflakes, false);
-      window.addEventListener("resize", setResetFlag, false);
+    else {
+        document.getElementById('snow').style.display = "none";
     }
-  }
-  setup();
+}
 
-  //
-  // Constructor for our Snowflake object
-  //
-  function Snowflake(element, speed, xPos, yPos) {
-    // set initial snowflake properties
-    this.element = element;
-    this.speed = speed;
-    this.xPos = xPos;
-    this.yPos = yPos;
-    this.scale = 1;
+// Creating snowflakes
+function spawn_snow(snow_density = 200) {
+    snow_density -= 1;
 
-    // declare variables used for snowflake's motion
-    this.counter = 0;
-    this.sign = Math.random() < 0.5 ? 1 : -1;
+    for (let x = 0; x < snow_density; x++) {
+        let board = document.createElement('div');
+        board.className = "snowflake";
 
-    // setting an initial opacity and size for our snowflake
-    this.element.style.opacity = (.1 + Math.random()) / 3;
-  }
-
-  //
-  // The function responsible for actually moving our snowflake
-  //
-  Snowflake.prototype.update = function () {
-    // using some trigonometry to determine our x and y position
-    this.counter += this.speed / 5000;
-    this.xPos += this.sign * this.speed * Math.cos(this.counter) / 40;
-    this.yPos += Math.sin(this.counter) / 40 + this.speed / 30;
-    this.scale = .5 + Math.abs(10 * Math.cos(this.counter) / 20);
-
-    // setting our snowflake's position
-    setTransform(Math.round(this.xPos), Math.round(this.yPos), this.scale, this.element);
-    // if snowflake goes below the browser window, move it back to the top
-    if (this.yPos > browserHeight) {
-      this.yPos = -50;
+        document.getElementById('snow').appendChild(board);
     }
-  }
+}
 
-  //
-  // A performant way to set your snowflake's position and size
-  //
-  function setTransform(xPos, yPos, scale, el) {
-    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0) scale(${scale}, ${scale})`;
-  }
+// Append style for each snowflake to the head
+function add_css(rule) {
+    let css = document.createElement('style');
+    css.type = 'text/css';
+    css.appendChild(document.createTextNode(rule)); // Support for the rest
+    document.getElementsByTagName("head")[0].appendChild(css);
+}
 
-  //
-  // The function responsible for creating the snowflake
-  //
-  function generateSnowflakes() {
 
-    // get our snowflake element from the DOM and store it
-    var originalSnowflake = document.querySelector(".snowflake");
 
-    // access our snowflake element's parent container
-    var snowflakeContainer = originalSnowflake.parentNode;
-    snowflakeContainer.style.display = "block";
+// Math
+function random_int(value = 100){
+    return Math.floor(Math.random() * value) + 1;
+}
 
-    // get our browser's size
-    browserWidth = document.documentElement.clientWidth;
-    browserHeight = document.documentElement.clientHeight;
+function random_range(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-    // create each individual snowflake
-    for (var i = 0; i < numberOfSnowflakes; i++) {
 
-      // clone our original snowflake and add it to snowflakeContainer
-      var snowflakeClone = originalSnowflake.cloneNode(true);
-      snowflakeContainer.appendChild(snowflakeClone);
+// Create style for snowflake
+function spawnSnowCSS(snow_density = 200){
+    let snowflake_name = "snowflake";
+    let rule = ``;
+    if (typeof base_css !== 'undefined'){
+        rule = base_css;
+    }
+    
+    for(let i = 1; i < snow_density; i++){
+        let random_x = Math.random() * 100; // vw
+        let random_offset = random_range(-100000, 100000) * 0.0001; // vw;
+        let random_x_end = random_x + random_offset;
+        let random_x_end_yoyo = random_x + (random_offset / 2);
+        let random_yoyo_time = random_range(30000, 80000) / 100000;
+        let random_yoyo_y = random_yoyo_time * 100; // vh
+        let random_scale = Math.random();
+        let fall_duration = random_range(10, 30) * 1; // s
+        let fall_delay = random_int(30) * -1; // s
+        let opacity_ = Math.random();
 
-      // set our snowflake's initial position and related properties
-      var initialXPos = getPosition(50, browserWidth);
-      var initialYPos = getPosition(50, browserHeight);
-      var speed = 5 + Math.random() * 40;
+        rule += `
+        .${snowflake_name}:nth-child(${i}) {
+            opacity: ${opacity_};
+            transform: translate(${random_x}vw, -10px) scale(${random_scale});
+            animation: fall-${i} ${fall_duration}s ${fall_delay}s linear infinite;
+        }
 
-      // create our Snowflake object
-      var snowflakeObject = new Snowflake(snowflakeClone,
-        speed,
-        initialXPos,
-        initialYPos);
-      snowflakes.push(snowflakeObject);
+        @keyframes fall-${i} {
+            ${random_yoyo_time*100}% {
+                transform: translate(${random_x_end}vw, ${random_yoyo_y}vh) scale(${random_scale});
+            }
+
+            to {
+                transform: translate(${random_x_end_yoyo}vw, 100vh) scale(${random_scale});
+            }
+            
+        }
+        `
     }
 
-    // remove the original snowflake because we no longer need it visible
-    snowflakeContainer.removeChild(originalSnowflake);
+    add_css(rule);
+}
 
-    moveSnowflakes();
-  }
+// Load the rules and execute after the DOM loads
+window.onload = function() {
+    spawnSnowCSS(snowflakes_count);
+    spawn_snow(snowflakes_count);
+};
 
-  //
-  // Responsible for moving each snowflake by calling its update function
-  //
-  function moveSnowflakes() {
-
-    if (enableAnimations) {
-      for (var i = 0; i < snowflakes.length; i++) {
-        var snowflake = snowflakes[i];
-        snowflake.update();
-      }      
-    }
-
-    // Reset the position of all the snowflakes to a new value
-    if (resetPosition) {
-      browserWidth = document.documentElement.clientWidth;
-      browserHeight = document.documentElement.clientHeight;
-
-      for (var i = 0; i < snowflakes.length; i++) {
-        var snowflake = snowflakes[i];
-
-        snowflake.xPos = getPosition(50, browserWidth);
-        snowflake.yPos = getPosition(50, browserHeight);
-      }
-
-      resetPosition = false;
-    }
-
-    requestAnimationFrame(moveSnowflakes);
-  }
-
-  //
-  // This function returns a number between (maximum - offset) and (maximum + offset)
-  //
-  function getPosition(offset, size) {
-    return Math.round(-1 * offset + Math.random() * (size + 2 * offset));
-  }
-
-  //
-  // Trigger a reset of all the snowflakes' positions
-  //
-  function setResetFlag(e) {
-    resetPosition = true;
-  }
+// TODO add progress bar for slower clients
 </script>
-
 <body class="dark" oncontextmenu="return false">
-
     <!-- Preloader -->
     <div id="preloader">
         <div class="outer">
@@ -789,7 +717,6 @@
     <script src="js/parallax.min.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
     <script src="js/custom.js"></script>
-   
 
 </body>
 
