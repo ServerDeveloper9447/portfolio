@@ -54,8 +54,6 @@ html:after {
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  
-  <script src="myscript.js"></script>
 </head>
   
 <body class="dark" oncontextmenu="return false">
@@ -225,10 +223,10 @@ html:after {
                                     <div class="skill-item">
                                         <div class="skill-info clearfix">
                                             <h4 class="float-left mb-3 mt-0">Your battery</h4>
-                                            <span class="float-right" id="batr-pgr">0%</span>
+                                            <span class="float-right">97%</span>
                                         </div>
                                         <div class="progress">
-                                            <div class="progress-bar data-background" id="battery" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="83" data-color="#FF0000" style="background-color: #fbb034; background-image: linear-gradient(315deg, #ff9900 0%, #ffee20 74%);">
+                                            <div class="progress-bar data-background" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="97" data-color="#FF0000" style="background-color: #fbb034; background-image: linear-gradient(315deg, #ff9900 0%, #ffee20 74%);">
                                             </div>
                                         </div>
                                         <div class="spacer" data-height="20"></div>
@@ -238,10 +236,10 @@ html:after {
                                     <div class="skill-item">
                                         <div class="skill-info clearfix">
                                             <h4 class="float-left mb-3 mt-0">Discord Server Members</h4>
-                                            <span class="float-right">64%</span>
+                                            <span class="float-right">89%</span>
                                         </div>
                                         <div class="progress">
-                                            <div class="progress-bar data-background" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="64" data-color="#F47FFF" style="background-color: #bf033b; background-image: linear-gradient(315deg, #ca2858 0%, #ff6319 74%);">
+                                            <div class="progress-bar data-background" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="89" data-color="#F47FFF" style="background-color: #bf033b; background-image: linear-gradient(315deg, #ca2858 0%, #ff6319 74%);">
                                             </div>
                                         </div>
                                         <div class="spacer" data-height="20"></div>
@@ -275,8 +273,8 @@ html:after {
                         <div class="fact-item">
                             <span class="icon icon-fire"></span>
                             <div class="details">
-                                <h3 class="mb-0 mt-0 number"><em class="count">101</em>%</h3>
-                                <p class="mb-0">Moderation</p>
+                                <h3 class="mb-0 mt-0 number"><em class="count" id="battery">101</em>%</h3>
+                                <p class="mb-0">Your Battery</p>
                             </div>
                         </div>
                         <div class="spacer d-md-none d-lg-none" data-height="30"></div>
@@ -620,6 +618,15 @@ html:after {
     <script src="js/parallax.min.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
     <script src="js/custom.js"></script>
+    <script>
+          var bt = document.querySelector('#battery')
+          setInterval(() => {
+          navigator.getBattery()
+      .then(battery => {
+            bt.innerHTML = Math.floor(battery.level*100)
+          })
+          }, 1000)
+          </script>
 
 </body>
 
