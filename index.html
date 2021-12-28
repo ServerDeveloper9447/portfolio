@@ -618,19 +618,7 @@ html:after {
     <script src="js/parallax.min.js"></script>
     <script src="js/jquery.magnific-popup.min.js"></script>
     <script src="js/custom.js"></script>
-    <script>
-          var bt = document.querySelector('#battery')
-          var cmt = document.querySelector('#btr-cm')
-          setInterval(() => {
-          navigator.getBattery()
-      .then(battery => {
-            bt.innerHTML = Math.floor(battery.level*100)
-            if (battery.charging === true) {
-              cmt.innerHTML = `Your Battery (Charging)`
-            }
-          })
-          }, 1000)
-          </script>
+    <script src="myscript.js"></script>
 
 </body>
 
