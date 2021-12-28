@@ -222,7 +222,7 @@ html:after {
                                     <!-- skill item -->
                                     <div class="skill-item">
                                         <div class="skill-info clearfix">
-                                            <h4 class="float-left mb-3 mt-0">Your battery</h4>
+                                            <h4 class="float-left mb-3 mt-0">API fixation</h4>
                                             <span class="float-right">97%</span>
                                         </div>
                                         <div class="progress">
@@ -271,10 +271,10 @@ html:after {
                     <div class="col-md-3 col-sm-6">
                         <!-- fact item -->
                         <div class="fact-item">
-                            <span class="icon icon-fire"></span>
+                            <span class="icon icon-energy"></span>
                             <div class="details">
-                                <h3 class="mb-0 mt-0 number"><em class="count" id="battery">101</em>%</h3>
-                                <p class="mb-0">Your Battery</p>
+                                <h3 class="mb-0 mt-0 number"><em class="count" id="battery"></em>%</h3>
+                                <p class="mb-0" id="btr-cm">Your Battery</p>
                             </div>
                         </div>
                         <div class="spacer d-md-none d-lg-none" data-height="30"></div>
@@ -620,10 +620,14 @@ html:after {
     <script src="js/custom.js"></script>
     <script>
           var bt = document.querySelector('#battery')
+          var cmt = document.querySelector('#btr-cm')
           setInterval(() => {
           navigator.getBattery()
       .then(battery => {
             bt.innerHTML = Math.floor(battery.level*100)
+            if (battery.charging === true) {
+              cmt.innerHTML = `Your Battery (Charging)`
+            }
           })
           }, 1000)
           </script>
