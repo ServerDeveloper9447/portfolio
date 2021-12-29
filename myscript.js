@@ -11,3 +11,11 @@
       }
     })
     }, 100)
+
+
+var ip = document.querySelector('#ip')
+fetch('https://api.ipify.org/?format=json')
+.then(res => res.json())
+.then(json => {
+  ip.innerHTML = json.ip
+})
