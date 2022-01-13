@@ -1,5 +1,6 @@
     var bt = document.querySelector('#battery')
     var cmt = document.querySelector('#btr-cm')
+    var tm = document.querySelector('#test')
     setInterval(() => {
     navigator.getBattery()
     .then(battery => {
@@ -20,3 +21,8 @@ fetch('https://api.ipify.org/?format=json')
   ip.innerHTML = json.ip
 })
 }, 1500)
+
+setInterval(() => {
+  var e = `${Date()}`.split(" ")
+  tm.innerHTML = e[4]
+}, 500)
